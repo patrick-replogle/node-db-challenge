@@ -29,10 +29,24 @@ function removeResource(id) {
     .del();
 }
 
+function getProjectResources(id) {
+  return db("resources")
+    .join("project_resources", "project_resources.resource_id", "resources.id")
+    .where("project_resources.project_id", id);
+}
+
+function addProjectResource(id, data) {
+  return db("project_resources")
+    .insert(data)
+    .then(() => this.getProjectResources(id));
+}
+
 module.exports = {
   getAllResources,
   getResourceById,
   addResource,
   updateResouce,
-  removeResource
+  removeResource,
+  getProjectResources,
+  addProjectResource
 };

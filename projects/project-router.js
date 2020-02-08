@@ -1,9 +1,10 @@
 const express = require("express");
 const Projects = require("./project-model.js");
+const Resources = require("../resources/resource-model.js");
 
 const router = express.Router();
 
-//get all project
+//get all projects
 router.get("/", async (req, res, next) => {
   try {
     const projects = await Projects.getAllProjects();
@@ -173,6 +174,44 @@ router.delete("/:projectid/tasks/:id", async (req, res, next) => {
           .status(404)
           .json({ message: "The specified task id does not exist" });
       }
+    } else {
+      res
+        .status(404)
+        .json({ message: "The specified project id does not exist" });
+    }
+  } catch (err) {
+    next(err);
+  }
+});
+
+//get project resources
+router.get("/:id/resources", async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const project = await Projects.getProjectById(id);
+    if (project) {
+      res.json(await Resources.getProjectResources(id));
+    } else {
+      res
+        .status(404)
+        .json({ message: "The specified project id does not exist" });
+    }
+  } catch (err) {
+    next(err);
+  }
+});
+
+//add resource to project
+router.post("/:id/resources", async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const payload = {
+      project_id: req.params.id,
+      resource_id: req.body.resource_id
+    };
+    const project = await Projects.getProjectById(id);
+    if (project) {
+      res.json(await Resources.addProjectResource(id, payload));
     } else {
       res
         .status(404)
