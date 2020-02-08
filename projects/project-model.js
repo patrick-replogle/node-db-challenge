@@ -56,6 +56,12 @@ function updateTask(id, data) {
     .then(count => (count > 0 ? this.getTaskById(id) : null));
 }
 
+function removeTask(id) {
+  return db("tasks")
+    .where({ id })
+    .del();
+}
+
 module.exports = {
   getAllProjects,
   getProjectById,
@@ -65,5 +71,6 @@ module.exports = {
   getTasks,
   getTaskById,
   addTask,
-  updateTask
+  updateTask,
+  removeTask
 };
